@@ -1,0 +1,7 @@
+---
+- name: install spacewalk client and join spacewalk
+  include: spacewalk_install.yml
+
+- name: Assign spacewalk group
+  include: spacewalk_assign_group.yml
+

@@ -1,0 +1,15 @@
+---
+- name: Provision VM
+  hosts: hypervserver
+  gather_facts: yes
+
+  roles:
+    - create_hyper-v_vm
+
+- name: Config and update the system
+  hosts: targetserver
+  gather_facts: yes
+
+  roles:
+#    - spacewalk
+    - update_system

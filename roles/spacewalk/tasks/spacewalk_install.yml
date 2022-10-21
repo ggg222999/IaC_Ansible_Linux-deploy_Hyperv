@@ -1,0 +1,55 @@
+---
+- name: download spacewalk client repo
+  shell: "curl https://copr-be.cloud.fedoraproject.org/results/%40spacewalkproject/spacewalk-2.8-client/epel-7-x86_64/00742644-spacewalk-repo/spacewalk-client-repo-2.8-11.el7.centos.noarch.rpm --output /tmp/spacewalk-client-repo-2.8-11.el7.centos.noarch.rpm"
+  args:
+    executable: /bin/bash
+
+- name: Install spacewalk client repo
+  yum:
+     name: /tmp/spacewalk-client-repo-2.8-11.el7.centos.noarch.rpm
+     state: present
+
+- name: Install spacewalk client pre-requist software
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - rhn-client-tools
+    - rhn-check
+    - rhn-setup
+    - rhnsd
+    - m2crypto
+    - yum-rhn-plugin
+
+- name: download spacewalk cert repo
+  shell: "curl --insecure https://spacewalk.gor.net/pub/rhn-org-trusted-ssl-cert-1.0-1.noarch.rpm --output /tmp/rhn-org-trusted-ssl-cert-1.0-1.noarch.rpm"
+  args:
+    executable: /bin/bash
+
+- name: Install spacewalk cert
+  yum:
+     name: /tmp/rhn-org-trusted-ssl-cert-1.0-1.noarch.rpm
+     state: present
+
+- name: Delete old entry in spacewalk
+  shell: "spacecmd -u admin -p Note2020! -y system_delete {{ item.name }}"
+  args:
+    executable: /bin/bash
+  delegate_to: "{{ patchserver }}"
+  with_items: "{{ vms }}"
+
+- name: Join to spacewalk
+  shell: "/usr/sbin/rhnreg_ks --force --serverUrl=https://spacewalk.gor.net/XMLRPC --sslCACert=/usr/share/rhn/RHN-ORG-TRUSTED-SSL-CERT --activationkey=1-centos7"
+  args:
+    executable: /bin/bash
+
+- name: Delete repo files
+  shell: "rm -f /etc/yum.repos.d/*.repo"
+  args:
+    executable: /bin/bash
+
+
+- name: import trusted ssl cert
+  shell: "rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7"
+  args:
+    executable: /bin/bash

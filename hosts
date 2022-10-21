@@ -1,0 +1,31 @@
+[hypervserver]
+10.1.1.1 ansible_port=5986 ansible_connection=winrm ansible_winrm_transport=ntlm ansible_winrm_server_cert_validation=ignore  ansible_user=administrator
+
+[targetserver]
+192.168.1.230 
+192.168.1.231
+192.168.1.232
+
+[k8smaster]
+192.168.1.230
+
+[k8sworker]
+192.168.1.231
+192.168.1.232
+
+
+[WinDNS]
+10.1.1.10 ansible_port=5986 ansible_connection=winrm ansible_winrm_transport=ntlm ansible_winrm_server_cert_validation=ignore  ansible_user=administrator
+
+[patchserver]
+spacewalk
+
+[all:vars]
+ansible_user=root
+ansible_password=xxxxxxxx
+
+spacewalk_user=admin
+spacewalk_password=xxxxxxxx
+patchserver=spacewalk
+
+dns_server=10.1.1.10

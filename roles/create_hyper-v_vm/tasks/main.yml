@@ -1,0 +1,7 @@
+---
+  - name: Create Hyperv vm
+    include: prov_vm.yml
+
+  - name: Configure vm vm
+    include: config_vm.yml
+

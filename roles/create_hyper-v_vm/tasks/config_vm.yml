@@ -1,0 +1,14 @@
+---
+  - name: Wait for VM to be running
+    win_wait_for:
+      host: "{{ item.network.ip }}"
+      port: "{{ item.ansible_port }}"
+      timeout: 300
+    with_items: "{{ vms }}"
+
+  - name: update hostname
+    hostname:
+      name: "{{ item.hostname }}"
+    delegate_to: "{{ item.network.ip }}"
+    with_items: "{{ vms }}"
+

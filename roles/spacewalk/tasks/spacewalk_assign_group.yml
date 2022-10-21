@@ -1,0 +1,7 @@
+---
+ - name: Assign spacewalk group
+   shell: "/usr/bin/spacecmd -u {{ spacewalk_user }} -p {{ spacewalk_password }} -y group_addsystems {{ item.spacewalk_group }} {{ item.name }}"
+   args:
+     executable: /bin/bash
+   delegate_to: "{{ patchserver }}"
+   with_items: "{{ spacewalk }}"
